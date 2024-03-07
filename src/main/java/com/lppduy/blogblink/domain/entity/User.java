@@ -24,6 +24,8 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    private String profileImageUrl;
+
     private Date createdAt;
     private Date updatedAt;
 

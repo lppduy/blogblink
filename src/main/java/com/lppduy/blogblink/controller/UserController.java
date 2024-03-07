@@ -8,9 +8,11 @@ import com.lppduy.blogblink.mapper.UserMapper;
 import com.lppduy.blogblink.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,18 +24,18 @@ public class UserController {
     @Autowired
     UserMapper userMapper;
 
-    @PostMapping("/add")
-    public ResponseEntity<User> addUser(@RequestBody UserAddRequestDTO userAddRequestDTO) {
-        User user = userMapper.userAddRequestDTOToUser(userAddRequestDTO)
-        User newUser = userService.createUser(user);
+    @PostMapping(value = "/add",
+    consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<User> addUser(UserAddRequestDTO userAddRequestDTO) throws IOException {
+        User newUser = userService.createUser(userAddRequestDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    @PutMapping("update/{userId}")
+    @PutMapping(value = "update/{userId}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<User> updateUser(
-           @PathVariable Long userId, @ RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
-        User user = userMapper.userUpdateRequestDTOToUser(userUpdateRequestDTO);
-        User updatedUser = userService.updateUser(userId,user);
+           @PathVariable Long userId, UserUpdateRequestDTO userUpdateRequestDTO) {
+        User updatedUser = userService.updateUser(userId,userUpdateRequestDTO);
         if (updatedUser == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
