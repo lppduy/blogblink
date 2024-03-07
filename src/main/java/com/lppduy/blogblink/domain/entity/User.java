@@ -1,9 +1,11 @@
 package com.lppduy.blogblink.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.Date;
 
+@Data
 @Entity
 @Table(name = "user")
 public class User {
