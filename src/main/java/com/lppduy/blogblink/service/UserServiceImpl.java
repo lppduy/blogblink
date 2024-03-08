@@ -24,8 +24,12 @@ public class UserServiceImpl implements UserService{
     @Autowired
     ImageService imageService;
 
+    @Autowired
+    UserValidationService userValidationService;
+
     @Override
     public User createUser(UserAddRequestDTO userAddRequestDTO) throws IOException {
+        userValidationService.validateUsernameAndEmail(userAddRequestDTO.getUsername(), userAddRequestDTO.getEmail(), null);
         String imageName = imageService.saveProfileImage(null, userAddRequestDTO.getUsername(), userAddRequestDTO.getProfileImageUrl());
         User userEntity = userMapper.userAddRequestDTOToUser(userAddRequestDTO);
         userEntity.setProfileImageUrl(imageName);
@@ -39,6 +43,7 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(()-> new RuntimeException("User not found with id: " + userId));
 
         userMapper.userUpdateRequestDTOToUser(userUpdateRequestDTO, existingUser);
+        userValidationService.validateUsernameAndEmail(userUpdateRequestDTO.getUsername(), userUpdateRequestDTO.getEmail(), userId);
 
         String imageName = imageService.saveProfileImage(existingUser.getProfileImageUrl(),userUpdateRequestDTO.getUsername(),userUpdateRequestDTO.getProfileImageUrl());
         existingUser.setProfileImageUrl(imageName);

@@ -1,11 +1,11 @@
-package com.lppduy.blogblink.repository;
+package com.lppduy.blogblink.service;
 
 import com.lppduy.blogblink.domain.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserValidationService {
+    void validateUsernameAndEmail(String newUsername, String newEmail, Long userId);
     Optional<User> findUserByUsername(String username);
     Optional<User> findUserByEmail(String email);
 }
