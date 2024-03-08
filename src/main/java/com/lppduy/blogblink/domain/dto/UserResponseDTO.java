@@ -1,6 +1,7 @@
 package com.lppduy.blogblink.domain.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -12,5 +13,6 @@ public class UserResponseDTO {
     private String email;
     private Date createdAt;
     private Date updatedAt;
+    private String profileImageUrl;
 }
 
