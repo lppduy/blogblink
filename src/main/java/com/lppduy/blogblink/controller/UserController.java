@@ -2,6 +2,9 @@ package com.lppduy.blogblink.controller;
 
 import com.lppduy.blogblink.domain.dto.*;
 import com.lppduy.blogblink.domain.entity.User;
+import com.lppduy.blogblink.exception.CustomApiException;
+import com.lppduy.blogblink.exception.EmailExistException;
+import com.lppduy.blogblink.exception.UsernameExistException;
 import com.lppduy.blogblink.mapper.UserMapper;
 import com.lppduy.blogblink.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +27,7 @@ public class UserController {
 
     @PostMapping(value = "/add",
     consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<User> addUser(UserAddRequestDTO userAddRequestDTO) throws IOException {
+    public ResponseEntity<User> addUser(UserAddRequestDTO userAddRequestDTO) throws IOException, EmailExistException, UsernameExistException, CustomApiException {
         User newUser = userService.createUser(userAddRequestDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
@@ -32,7 +35,7 @@ public class UserController {
     @PutMapping(value = "update/{userId}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<User> updateUser(
-           @PathVariable Long userId, UserUpdateRequestDTO userUpdateRequestDTO) throws IOException {
+           @PathVariable Long userId, UserUpdateRequestDTO userUpdateRequestDTO) throws IOException, EmailExistException, UsernameExistException, CustomApiException {
         User updatedUser = userService.updateUser(userId,userUpdateRequestDTO);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }

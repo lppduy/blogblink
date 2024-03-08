@@ -2,6 +2,9 @@ package com.lppduy.blogblink.service;
 
 import com.lppduy.blogblink.domain.dto.*;
 import com.lppduy.blogblink.domain.entity.User;
+import com.lppduy.blogblink.exception.CustomApiException;
+import com.lppduy.blogblink.exception.EmailExistException;
+import com.lppduy.blogblink.exception.UsernameExistException;
 import com.lppduy.blogblink.mapper.UserMapper;
 import com.lppduy.blogblink.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,7 @@ public class UserServiceImpl implements UserService{
     UserValidationService userValidationService;
 
     @Override
-    public User createUser(UserAddRequestDTO userAddRequestDTO) throws IOException {
+    public User createUser(UserAddRequestDTO userAddRequestDTO) throws IOException, EmailExistException, UsernameExistException, CustomApiException {
         userValidationService.validateUsernameAndEmail(userAddRequestDTO.getUsername(), userAddRequestDTO.getEmail(), null);
         String imageName = imageService.saveProfileImage(null, userAddRequestDTO.getUsername(), userAddRequestDTO.getProfileImageUrl());
         User userEntity = userMapper.userAddRequestDTOToUser(userAddRequestDTO);
@@ -37,7 +40,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateUser(Long userId, UserUpdateRequestDTO userUpdateRequestDTO) throws IOException {
+    public User updateUser(Long userId, UserUpdateRequestDTO userUpdateRequestDTO) throws IOException, EmailExistException, UsernameExistException, CustomApiException {
 
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(()-> new RuntimeException("User not found with id: " + userId));
