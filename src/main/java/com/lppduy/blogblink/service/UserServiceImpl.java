@@ -48,9 +48,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User removeUser(Long userId) {
-        Optional<User> existingUserOpt = userRepository.findById(userId);
-        userRepository.delete(existingUserOpt.get());
-        return existingUserOpt.get();
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(()-> new RuntimeException("User not found with id: " + userId));
+        imageService.deleteUserProfileImage(existingUser.getProfileImageUrl());
+        userRepository.delete(existingUser);
+        return existingUser;
     }
 
     @Override
