@@ -1,11 +1,11 @@
 package com.lppduy.blogblink.service;
 
-import com.lppduy.blogblink.domain.dto.UserAddRequestDTO;
-import com.lppduy.blogblink.domain.dto.UserUpdateRequestDTO;
+import com.lppduy.blogblink.domain.dto.*;
 import com.lppduy.blogblink.domain.entity.User;
 import com.lppduy.blogblink.mapper.UserMapper;
 import com.lppduy.blogblink.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -61,8 +61,19 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<User> getAllUsers() {
-
-        return userRepository.findAll();
+    public PaginationResponseDTO<UserResponseDTO> getAllUsers(UserSearchRequestDTO userSearchRequestDTO) {
+        Page<User> usersPage = userRepository.findAllUsers(
+                userSearchRequestDTO.getStartDate(),
+                userSearchRequestDTO.getEndDate(),
+                userSearchRequestDTO.getSearchTerm(),
+                userSearchRequestDTO.getPageable()
+        );
+        List<UserResponseDTO> userResponseDTOs = userMapper.usersToUserResponseDTOs(usersPage);
+        return new PaginationResponseDTO<>(
+                userResponseDTOs,
+                usersPage.getTotalElements(),
+                usersPage.getNumber() + 1,
+                usersPage.getSize()
+        );
     }
 }
