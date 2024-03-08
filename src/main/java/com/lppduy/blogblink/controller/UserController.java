@@ -1,8 +1,6 @@
 package com.lppduy.blogblink.controller;
 
-import com.lppduy.blogblink.domain.dto.UserAddRequestDTO;
-import com.lppduy.blogblink.domain.dto.UserResponseDTO;
-import com.lppduy.blogblink.domain.dto.UserUpdateRequestDTO;
+import com.lppduy.blogblink.domain.dto.*;
 import com.lppduy.blogblink.domain.entity.User;
 import com.lppduy.blogblink.mapper.UserMapper;
 import com.lppduy.blogblink.service.UserService;
@@ -46,10 +44,10 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
-        List<User> userList = userService.getAllUsers();
-        List<UserResponseDTO> userResponseDTOList = userMapper.usersToUserResponseDTOs(userList);
-        return new ResponseEntity<>(userResponseDTOList, HttpStatus.OK);
+    public ResponseEntity<PaginationResponseDTO<UserResponseDTO>> getAllUsers(@ModelAttribute UserSearchRequestDTO userSearchRequestDTO) {
+        userSearchRequestDTO.updatePageable();
+        PaginationResponseDTO<UserResponseDTO> userList = userService.getAllUsers(userSearchRequestDTO);
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
 }
