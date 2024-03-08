@@ -34,11 +34,8 @@ public class UserController {
     @PutMapping(value = "update/{userId}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<User> updateUser(
-           @PathVariable Long userId, UserUpdateRequestDTO userUpdateRequestDTO) {
+           @PathVariable Long userId, UserUpdateRequestDTO userUpdateRequestDTO) throws IOException {
         User updatedUser = userService.updateUser(userId,userUpdateRequestDTO);
-        if (updatedUser == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 

@@ -6,6 +6,7 @@ import com.lppduy.blogblink.domain.dto.UserUpdateRequestDTO;
 import com.lppduy.blogblink.domain.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +15,8 @@ import java.util.stream.Collectors;
 public interface UserMapper {
     @Mapping(target = "profileImageUrl",ignore = true)
     User userAddRequestDTOToUser(UserAddRequestDTO dto);
-    User userUpdateRequestDTOToUser(UserUpdateRequestDTO dto);
+    @Mapping(target = "profileImageUrl",ignore = true)
+    User userUpdateRequestDTOToUser(UserUpdateRequestDTO dto, @MappingTarget User user);
     UserResponseDTO userToUserResponseDTO(User user);
     List<UserResponseDTO> usersToUserResponseDTOs(List<User> users);
 }

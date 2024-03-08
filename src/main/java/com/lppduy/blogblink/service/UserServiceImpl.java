@@ -33,15 +33,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateUser(Long userId, UserUpdateRequestDTO userUpdateRequestDTO) {
+    public User updateUser(Long userId, UserUpdateRequestDTO userUpdateRequestDTO) throws IOException {
 
-        Optional<User> existingUserOpt = userRepository.findById(userId);
-        User existingUser = existingUserOpt.get();
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(()-> new RuntimeException("User not found with id: " + userId));
 
-        existingUser.setFirstName(userUpdateRequestDTO.getFirstName());
-        existingUser.setLastName(userUpdateRequestDTO.getLastName());
-        existingUser.setEmail(userUpdateRequestDTO.getEmail());
-        existingUser.setUsername(userUpdateRequestDTO.getUsername());
+        userMapper.userUpdateRequestDTOToUser(userUpdateRequestDTO, existingUser);
+
+        String imageName = imageService.saveProfileImage(existingUser.getProfileImageUrl(),userUpdateRequestDTO.getUsername(),userUpdateRequestDTO.getProfileImageUrl());
+        existingUser.setProfileImageUrl(imageName);
 
         return userRepository.save(existingUser);
     }

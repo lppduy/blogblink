@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserService {
     User createUser(UserAddRequestDTO user) throws IOException;
-    User updateUser(Long userId, UserUpdateRequestDTO user);
+    User updateUser(Long userId, UserUpdateRequestDTO user) throws IOException;
     User removeUser(Long userId);
     List<User> getAllUsers();
 }
