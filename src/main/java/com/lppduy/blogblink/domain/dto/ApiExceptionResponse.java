@@ -18,7 +18,7 @@ public class ApiExceptionResponse {
 
     private HttpStatus status;
 
-    private String errorCode;
+    private String responseCode;
 
     private List<String> messages;
 }

@@ -2,7 +2,7 @@ package com.lppduy.blogblink.utils;
 
 import com.lppduy.blogblink.domain.dto.ApiExceptionResponse;
 import com.lppduy.blogblink.domain.dto.ApiResponse;
-import com.lppduy.blogblink.enums.ErrorCode;
+import com.lppduy.blogblink.enums.ResponseCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -20,27 +20,27 @@ public class ResponseUtil {
         );
         return new ResponseEntity<>(exceptionResponse, httpStatus);
     }
-    public static ResponseEntity<ApiExceptionResponse> createResponse(ErrorCode errorCode, List<String> message) {
+    public static ResponseEntity<ApiExceptionResponse> createResponse(ResponseCode responseCode, List<String> message) {
         ApiExceptionResponse exceptionResponse = new ApiExceptionResponse(
                 new Date(),
-                errorCode.getHttpStatus().value(),
-                errorCode.getHttpStatus(),
-                errorCode.getErrorCode(),
+                responseCode.getHttpStatus().value(),
+                responseCode.getHttpStatus(),
+                responseCode.getReponseCode(),
                 message
         );
-        return new ResponseEntity<>(exceptionResponse, errorCode.getHttpStatus());
+        return new ResponseEntity<>(exceptionResponse, responseCode.getHttpStatus());
     }
 
-    public static <T> ResponseEntity<ApiResponse<T>> createResponse(T data, ErrorCode errorCode) {
+    public static <T> ResponseEntity<ApiResponse<T>> createResponse(T data, ResponseCode responseCode) {
         ApiResponse<T> apiResponse = new ApiResponse<>(
                 new Date(),
-                errorCode.getHttpStatus().value(),
-                errorCode.getHttpStatus(),
-                errorCode.getErrorCode(),
-                errorCode.getMessage(),
+                responseCode.getHttpStatus().value(),
+                responseCode.getHttpStatus(),
+                responseCode.getReponseCode(),
+                responseCode.getMessage(),
                 data
         );
 
-        return new ResponseEntity<>(apiResponse, errorCode.getHttpStatus());
+        return new ResponseEntity<>(apiResponse, responseCode.getHttpStatus());
     }
 }

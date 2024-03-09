@@ -12,6 +12,6 @@ import java.util.List;
 public interface UserService {
     User createUser(UserAddRequestDTO user) throws IOException, EmailExistException, UsernameExistException, CustomApiException;
     User updateUser(Long userId, UserUpdateRequestDTO user) throws IOException, EmailExistException, UsernameExistException, CustomApiException;
-    User removeUser(Long userId);
+    User removeUser(Long userId) throws CustomApiException;
     PaginationResponseDTO<UserResponseDTO> getAllUsers(UserSearchRequestDTO userSearchRequestDTO);
 }

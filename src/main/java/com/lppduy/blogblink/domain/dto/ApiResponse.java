@@ -14,7 +14,7 @@ public class ApiResponse<T> {
     private Date timestamp;
     private int statusCode;
     private HttpStatus status;
-    private String errorCode;
+    private String responseCode;
     private String message;
     private T data;
 }

@@ -2,6 +2,7 @@ package com.lppduy.blogblink.service;
 
 import com.lppduy.blogblink.domain.dto.*;
 import com.lppduy.blogblink.domain.entity.User;
+import com.lppduy.blogblink.enums.ResponseCode;
 import com.lppduy.blogblink.exception.CustomApiException;
 import com.lppduy.blogblink.exception.EmailExistException;
 import com.lppduy.blogblink.exception.UsernameExistException;
@@ -13,10 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService{
     UserValidationService userValidationService;
 
     @Override
-    public User createUser(UserAddRequestDTO userAddRequestDTO) throws IOException, EmailExistException, UsernameExistException, CustomApiException {
+    public User createUser(UserAddRequestDTO userAddRequestDTO) throws IOException, CustomApiException, EmailExistException, UsernameExistException {
         userValidationService.validateUsernameAndEmail(userAddRequestDTO.getUsername(), userAddRequestDTO.getEmail(), null);
         String imageName = imageService.saveProfileImage(null, userAddRequestDTO.getUsername(), userAddRequestDTO.getProfileImageUrl());
         User userEntity = userMapper.userAddRequestDTOToUser(userAddRequestDTO);
@@ -40,24 +41,23 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateUser(Long userId, UserUpdateRequestDTO userUpdateRequestDTO) throws IOException, EmailExistException, UsernameExistException, CustomApiException {
-
+    public User updateUser(Long userId, UserUpdateRequestDTO userUpdateRequestDTO) throws IOException, CustomApiException, EmailExistException, UsernameExistException {
         User existingUser = userRepository.findById(userId)
-                .orElseThrow(()-> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new CustomApiException(ResponseCode.USER_NOT_FOUND, ResponseCode.USER_NOT_FOUND.getMessage() + ": " + userId));
 
         userMapper.userUpdateRequestDTOToUser(userUpdateRequestDTO, existingUser);
         userValidationService.validateUsernameAndEmail(userUpdateRequestDTO.getUsername(), userUpdateRequestDTO.getEmail(), userId);
-
-        String imageName = imageService.saveProfileImage(existingUser.getProfileImageUrl(),userUpdateRequestDTO.getUsername(),userUpdateRequestDTO.getProfileImageUrl());
+        String imageName = imageService.saveProfileImage(existingUser.getProfileImageUrl(), userUpdateRequestDTO.getUsername(), userUpdateRequestDTO.getProfileImageUrl());
         existingUser.setProfileImageUrl(imageName);
-
         return userRepository.save(existingUser);
+
     }
 
     @Override
-    public User removeUser(Long userId) {
+    public User removeUser(Long userId) throws CustomApiException {
         User existingUser = userRepository.findById(userId)
-                .orElseThrow(()-> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new CustomApiException(ResponseCode.USER_NOT_FOUND, ResponseCode.USER_NOT_FOUND.getMessage() + ": " + userId));
+
         imageService.deleteUserProfileImage(existingUser.getProfileImageUrl());
         userRepository.delete(existingUser);
         return existingUser;
@@ -80,3 +80,4 @@ public class UserServiceImpl implements UserService{
         );
     }
 }
+
