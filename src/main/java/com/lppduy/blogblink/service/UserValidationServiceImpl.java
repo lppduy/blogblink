@@ -1,6 +1,8 @@
 package com.lppduy.blogblink.service;
 
 import com.lppduy.blogblink.domain.entity.User;
+import com.lppduy.blogblink.enums.ResponseCode;
+import com.lppduy.blogblink.exception.CustomApiException;
 import com.lppduy.blogblink.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,18 +16,22 @@ public class UserValidationServiceImpl implements UserValidationService{
     @Autowired
     UserRepository userRepository;
 
-    public void validateUsernameAndEmail(String newUsername, String newEmail, Long userId) {
-        findUserByUsername(newUsername).ifPresent(user -> {
+    public void validateUsernameAndEmail(String newUsername, String newEmail, Long userId) throws CustomApiException {
+        Optional<User> userWithUsername = findUserByUsername(newUsername);
+        if (userWithUsername.isPresent()) {
+            User user = userWithUsername.get();
             if (userId == null || !user.getId().equals(userId)) {
-                throw new RuntimeException("Username is already taken: " + newUsername);
+                throw new CustomApiException(ResponseCode.USERNAME_ALREADY_TAKEN, ResponseCode.USERNAME_ALREADY_TAKEN.getMessage() +": " + newUsername);
             }
-        });
+        }
 
-        findUserByEmail(newEmail).ifPresent(user -> {
+        Optional<User> userWithEmail = findUserByEmail(newEmail);
+        if (userWithEmail.isPresent()) {
+            User user = userWithEmail.get();
             if (userId == null || !user.getId().equals(userId)) {
-                throw new RuntimeException("Email is already in use: " + newEmail);
+                throw new CustomApiException(ResponseCode.EMAIL_ALREADY_IN_USE, ResponseCode.EMAIL_ALREADY_IN_USE.getMessage() +": "+ newEmail);
             }
-        });
+        }
     }
 
     @Transactional(readOnly = true)
